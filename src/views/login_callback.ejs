@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>로그인 성공 페이지</title>
+    </head>
+    <body>
+        <h1>로그인 성공</h1>
+    </body>
+    <script>
+        const result = "<%= result %>"
+        console.log(result)
+        if (result === "true") {
+            alert("카카오톡 아이디로 로그인 되셨습니다.");
+            window.close();
+        } else {
+            alert("카카오 로그인 실패 !!");
+        }
+    </script>
+</html>
