@@ -1,6 +1,7 @@
 import express from 'express';
 import axios from 'axios';
 import querystring from 'querystring';
+import passport from 'passport';
 import config from '../../config';
 import userTokenService from '../../services/userTokenService';
 
@@ -14,8 +15,17 @@ export default (router) => {
   });
 
   route.get('/login', async (req, res) => {
+    console.log('login get');
     const context = { host: config.host, KAKAO_REST_API_KEY: config.KAKAO_REST_API_KEY };
     res.render('login', context);
+  });
+
+  route.post('/login', passport.authenticate('basic', {
+    successRedirect: '/',
+    failureRedirect: '/login',
+  }), async (req, res) => {
+    console.log('login!!!!!!!!');
+    res.json({ message: 'login success' });
   });
 
   route.get('/auth/callback', async (req, res) => {

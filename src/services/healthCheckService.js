@@ -36,7 +36,7 @@ class HealthCheckService {
       error = 1;
       this.handleAndSendError();
     }
-    this.store.push({ datetime: moment().format('MM/DD hh:mm'), error });
+    this.store.push({ datetime: moment().format('MM/DD HH:mm'), error });
   }
 }
 

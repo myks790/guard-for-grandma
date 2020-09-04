@@ -18,6 +18,14 @@ class UserTokenService {
   getTokenType() {
     return this.tokenType;
   }
+
+  getToken() {
+    return {
+      accessToken: this.accessToken,
+      refreshToken: this.refreshToken,
+      tokenType: this.tokenType,
+    };
+  }
 }
 
 const userTokenService = new UserTokenService();
