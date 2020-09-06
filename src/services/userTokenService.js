@@ -70,13 +70,12 @@ class UserTokenService {
           'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
         },
       });
-      console.log(result.data);
       if (result.status === 200) {
         this.tokenType = result.data.token_type;
         this.accessToken = result.data.access_token;
-        this.expires_in = result.data.expires_in;
-        if (result.data.refreshToken) {
-          this.expiresIn = result.data.refreshToken;
+        this.expiresIn = result.data.expires_in;
+        if (result.data.refresh_token) {
+          this.refreshToken = result.data.refresh_token;
         }
         if (result.data.refresh_token_expires_in) {
           this.refreshTokenExpiresIn = result.data.refresh_token_expires_in;
