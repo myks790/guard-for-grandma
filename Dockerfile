@@ -1,4 +1,5 @@
 FROM node:12-slim
+ENV TZ=Asia/Seoul
 
 WORKDIR /usr/src/app
 COPY package*.json ./
