@@ -1,22 +1,23 @@
 import Sequelize from 'sequelize';
 import sequelize from '../loaders/sequelizeLoader';
 
-const Health = sequelize.define('Health', {
+const LoginLog = sequelize.define('LoginLog', {
   id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  name: {
-    type: Sequelize.ENUM,
-    values: ['router', 'client'],
-    allowNull: false,
+  email: {
+    type: Sequelize.STRING(50),
+  },
+  password: {
+    type: Sequelize.STRING(50),
   },
   status: {
     type: Sequelize.ENUM,
-    values: ['up', 'down'],
+    values: ['ok', 'fail'],
     allowNull: false,
   },
 });
 
-export default Health;
+export default LoginLog;

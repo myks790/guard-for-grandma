@@ -1,6 +1,8 @@
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
 import config from '../config';
+import LoginLog from '../models/LoginLog';
+import userService from '../services/userService';
 
 passport.serializeUser((user, done) => {
   console.log('serializeUser');
@@ -20,10 +22,13 @@ passport.use('basic', new LocalStrategy(
     passwordField: 'password',
     session: true,
   },
-  async (email, password, done) => {
-    if (config.email === email && config.pw === password) {
+  async (email, _password, done) => {
+    const success = await userService.verify(email, _password);
+    if (success) {
+      LoginLog.create({ email, password: null, status: 'ok' });
       return done(null, { email: config.email });
     }
+    LoginLog.create({ email, password: _password, status: 'fail' });
     return done(null, false, { message: 'Incorrect password' });
   },
 ));
