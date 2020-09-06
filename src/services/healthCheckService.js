@@ -14,7 +14,7 @@ class HealthCheckService {
 
   sendErrorMessage() {
     while (!this.errorStore.isEmpty() && this.errorStore.size() > this.term) {
-      // messageService.sendMe(`Router healthCheck fail : \n${this.errorStore.getArray().join('\n')}`);
+      messageService.sendMe(`Router healthCheck fail : \n${this.errorStore.getArray().join('\n')}`);
       if (this.term < 14) {
         this.term += 2;
       }

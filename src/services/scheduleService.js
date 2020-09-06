@@ -1,15 +1,12 @@
 import schedule from 'node-schedule';
 import healthCheckService from './healthCheckService';
+import userTokenService from './userTokenService';
+import messageService from './messageService';
 
-class ScheduleService {
-  constructor(_healthCheckService) {
-    this.healthCheckService = _healthCheckService;
-  }
-
+export default {
   start() {
-    schedule.scheduleJob('*/5 * * * *', () => { this.healthCheckService.checkRouter(); });
-  }
-}
-
-const scheduleService = new ScheduleService(healthCheckService);
-export default scheduleService;
+    schedule.scheduleJob('*/5 * * * *', () => { healthCheckService.checkRouter(); });
+    schedule.scheduleJob('0 */6 * * *', () => { userTokenService.refresh(); });
+    schedule.scheduleJob('0 10 * * *', () => { messageService.sendMe('I\'m alive - guard for guardma server'); });
+  },
+};

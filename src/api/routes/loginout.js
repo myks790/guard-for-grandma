@@ -15,16 +15,13 @@ export default (router) => {
   });
 
   route.get('/login', async (req, res) => {
-    console.log('login get');
-    const context = { host: config.host, KAKAO_REST_API_KEY: config.KAKAO_REST_API_KEY };
-    res.render('login', context);
+    res.render('login');
   });
 
   route.post('/login', passport.authenticate('basic', {
     successRedirect: '/',
     failureRedirect: '/login',
   }), async (req, res) => {
-    console.log('login!!!!!!!!');
     res.json({ message: 'login success' });
   });
 
@@ -42,8 +39,10 @@ export default (router) => {
     const context = { result: false };
     if (result.status === 200) {
       context.result = true;
-      const { access_token, refresh_token, token_type } = result.data;
-      userTokenService.set(access_token, refresh_token, token_type);
+      const {
+        access_token, refresh_token, token_type, expires_in, refresh_token_expires_in,
+      } = result.data;
+      userTokenService.set(access_token, refresh_token, token_type, expires_in, refresh_token_expires_in);
     }
     res.render('login_callback', context);
   });

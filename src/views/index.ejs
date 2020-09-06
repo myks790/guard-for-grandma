@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>메인 페이지</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.0.5/css/adminlte.min.css">
+    </head>
+    <body>
+        <div class="card card-default">
+            <div class="card-header">
+              <h3 class="card-title">
+                상태
+              </h3>
+            </div>
+            <div class="card-body">
+                <p>login email : <b><%= email %></b></p>
+                <div class="">isAccessToken : <b><%= isAccessToken %></b> 
+                    <div class="btn-group col-6">
+                        <button type="button" onclick="updateExpireIn()" class="btn btn-secondary ">update ExpireIn</button>
+                    </div>
+                </div>
+                <p>expiresIn : <b><%= expiresIn %></b></p>
+                <p>refreshTokenExpiresIn : <b><%= refreshTokenExpiresIn %></b></p>
+            </div>
+          </div>
+        <% if (!isAccessToken) { %>
+            <button onclick="kakaoLogin()" class="btn btn-primary btn-block">kakao login</button>
+        <% } %>
+    </body>
+    <script>
+        function kakaoLogin () {
+            apiLink = "https://kauth.kakao.com/oauth/authorize?client_id=<%= KAKAO_REST_API_KEY %>&redirect_uri=<%= host %>/auth/callback&response_type=code"
+            window.open(apiLink, "kakao", "width=420, height=600");
+        };
+        function updateExpireIn () {
+            fetch('./updateExpireIn');
+        };
+    </script>
+</html>

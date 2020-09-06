@@ -17,13 +17,15 @@ class MessageService {
       },
       button_title: '바로 확인',
     };
-    const result = await this.axios.post('https://kapi.kakao.com/v2/api/talk/memo/default/send', `template_object=${JSON.stringify(templateObj)}`, {
-      headers: {
-        Authorization: `${userTokenService.getTokenType()} ${userTokenService.getAccessToken()}`,
-      },
-    });
-    if (result.status === 200) {
-      console.log('sendMe ', result.status);
+    if (userTokenService.getAccessToken()) {
+      const result = await this.axios.post('https://kapi.kakao.com/v2/api/talk/memo/default/send', `template_object=${JSON.stringify(templateObj)}`, {
+        headers: {
+          Authorization: `${userTokenService.getTokenType()} ${userTokenService.getAccessToken()}`,
+        },
+      });
+      if (result.status === 200) {
+        console.log('sendMe ', result.status);
+      }
     }
   }
 }

@@ -43,7 +43,6 @@
                     </div>
                     <div class="col-12">
                         <input type="submit" class="btn btn-primary btn-block" value="Login"/>
-                        <button onclick="kakaoLogin()" class="btn btn-primary btn-block">kakao login</button>
                     </div>
                     </div>
                 </form>
@@ -52,10 +51,4 @@
             </div>
         </div>  
     </body>
-    <script>
-        function kakaoLogin () {
-            apiLink = "https://kauth.kakao.com/oauth/authorize?client_id=<%= KAKAO_REST_API_KEY %>&redirect_uri=<%= host %>/auth/callback&response_type=code"
-            window.open(apiLink, "kakao", "width=420, height=600");
-        };
-    </script>
 </html>
