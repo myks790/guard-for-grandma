@@ -9,6 +9,7 @@ const sequelize = new Sequelize(
     host: config.sequelize.host, // 데이터베이스 호스트
     port: config.sequelize.port,
     dialect: config.sequelize.dialect, // 사용할 데이터베이스 종류
+    timezone: '+09:00',
   },
 );
 

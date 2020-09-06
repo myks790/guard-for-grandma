@@ -7,6 +7,6 @@ export default {
   start() {
     schedule.scheduleJob('*/5 * * * *', () => { healthCheckService.checkRouter(); });
     schedule.scheduleJob('0 */6 * * *', () => { userTokenService.refresh(); });
-    schedule.scheduleJob('0 8 * * *', () => { messageService.sendMe('I\'m alive - guard for guardma server'); });
+    schedule.scheduleJob('45 8 * * *', () => { messageService.sendMe('I\'m alive - guard for guardma server'); });
   },
 };
