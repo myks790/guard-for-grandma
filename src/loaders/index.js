@@ -8,5 +8,5 @@ export default (app) => {
   passportLoader(app);
   expressLoader(app);
 
-  // scheduleService.start();
+  scheduleService.start();
 };

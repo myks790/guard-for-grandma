@@ -3,40 +3,43 @@ import moment from 'moment';
 import config from '../config';
 import Queue from '../utils/Queue';
 import messageService from './messageService';
+import Health from '../models/Health';
 
 class HealthCheckService {
   constructor(_axios) {
     this.axios = _axios;
-    this.store = new Queue(12);
-    this.errorStore = new Queue(4);
+    this.errorStore = new Queue(15);
+    this.term = 2;
   }
 
-  handleAndSendError() {
-    while (!this.store.isEmpty()) {
-      const data = this.store.pop();
-      if (data.error === 1) {
-        this.errorStore.push(data);
-        const errortimes = this.errorStore.getArray().map((item) => item.datetime);
-        messageService.sendMe(`Router healthCheck fail : \n${errortimes.join('\n')}`);
+  sendErrorMessage() {
+    while (!this.errorStore.isEmpty() && this.errorStore.size() > this.term) {
+      // messageService.sendMe(`Router healthCheck fail : \n${this.errorStore.getArray().join('\n')}`);
+      if (this.term < 14) {
+        this.term += 2;
       }
     }
   }
 
   async checkRouter() {
-    let error = 0;
     try {
       const result = await this.axios.get(config.router);
       if (result.status === 200) {
-        error = 0;
+        Health.create({ name: 'router', status: 'up' });
+        if (this.errorStore.size() > 0) {
+          this.term = 2;
+          this.errorStore = new Queue(15);
+        }
       } else {
-        error = 1;
-        this.handleAndSendError();
+        Health.create({ name: 'router', status: 'down' });
+        this.errorStore.push(moment().format('DD HH:mm'));
+        this.sendErrorMessage();
       }
     } catch (err) {
-      error = 1;
-      this.handleAndSendError();
+      Health.create({ name: 'router', status: 'down' });
+      this.errorStore.push(moment().format('DD HH:mm'));
+      this.sendErrorMessage();
     }
-    this.store.push({ datetime: moment().format('MM/DD HH:mm'), error });
   }
 }
 
