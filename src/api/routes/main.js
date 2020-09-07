@@ -7,6 +7,7 @@ const route = express.Router();
 
 export default (router) => {
   router.use(route);
+
   route.get('/', passport.isAuthenticated, async (req, res) => {
     const { email } = req.user || '';
     const { accessToken, expiresIn, refreshTokenExpiresIn } = userTokenService.getToken();

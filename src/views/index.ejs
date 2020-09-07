@@ -23,13 +23,13 @@
                 <p>refreshTokenExpiresIn : <b><%= refreshTokenExpiresIn %></b></p>
             </div>
           </div>
-        <% if (!isAccessToken) { %>
+        <!-- <% if (!isAccessToken) { %> -->
             <button onclick="kakaoLogin()" class="btn btn-primary btn-block">kakao login</button>
-        <% } %>
+        <!-- <% } %> -->
     </body>
     <script>
         function kakaoLogin () {
-            apiLink = "https://kauth.kakao.com/oauth/authorize?client_id=<%= KAKAO_REST_API_KEY %>&redirect_uri=<%= host %>/auth/callback&response_type=code"
+            apiLink = "https://kauth.kakao.com/oauth/authorize?client_id=<%= KAKAO_REST_API_KEY %>&redirect_uri=<%= host %>/auth/callback&response_type=code&scope=profile,talk_message,friends"
             window.open(apiLink, "kakao", "width=420, height=600");
         };
         function updateExpireIn () {
