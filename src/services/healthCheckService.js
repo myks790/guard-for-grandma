@@ -8,14 +8,14 @@ import Health from '../models/Health';
 class HealthCheckService {
   constructor(_axios) {
     this.axios = _axios;
-    this.errorStore = new Queue(15);
+    this.errorStore = new Queue(9);
     this.term = 2;
   }
 
   sendErrorMessage() {
     while (!this.errorStore.isEmpty() && this.errorStore.size() > this.term) {
       messageService.sendMe(`Router healthCheck fail : \n${this.errorStore.getArray().join('\n')}`);
-      if (this.term < 14) {
+      if (this.term < 8) {
         this.term += 2;
       }
     }
@@ -27,17 +27,18 @@ class HealthCheckService {
       if (result.status === 200) {
         Health.create({ name: 'router', status: 'up' });
         if (this.errorStore.size() > 0) {
+          messageService.sendMe('Router healthCheck success');
           this.term = 2;
           this.errorStore = new Queue(15);
         }
       } else {
         Health.create({ name: 'router', status: 'down' });
-        this.errorStore.push(moment().format('DD HH:mm'));
+        this.errorStore.push(moment().format('DD일 HH:mm'));
         this.sendErrorMessage();
       }
     } catch (err) {
       Health.create({ name: 'router', status: 'down' });
-      this.errorStore.push(moment().format('DD HH:mm'));
+      this.errorStore.push(moment().format('DD일 HH:mm'));
       this.sendErrorMessage();
     }
   }
