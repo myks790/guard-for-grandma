@@ -9,7 +9,7 @@ const Health = sequelize.define('Health', {
   },
   name: {
     type: Sequelize.ENUM,
-    values: ['router', 'client'],
+    values: ['router', 'client', 'nvr'],
     allowNull: false,
   },
   status: {

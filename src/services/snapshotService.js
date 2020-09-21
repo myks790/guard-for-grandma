@@ -2,32 +2,47 @@ import axios from 'axios';
 import moment from 'moment';
 import fs from 'fs';
 import config from '../config';
+import Health from '../models/Health';
 
 class SnapshotServive {
   constructor() {
     this.errorCnt = 0;
+    this.lock = false;
+    this.basePath = 'Z:/ch-gm/snapshots';
   }
 
   getSnapshot() {
-    axios.get(config.snapshotHost,
-      {
-        responseType: 'arraybuffer',
-        headers: {
-          'Content-Type': 'image/jpeg',
-        },
-      })
-      .then((response) => {
-        const filename = moment().format('MM_DD HH-mm-ss');
-        const writer = fs.createWriteStream(`D:/snapshots/${filename}.jpg`);
-        writer.write(response.data, () => {
-          writer.end();
+    if (this.lock === false) {
+      this.lock = true;
+      const filename = moment().format('MM_DD HH-mm-ss');
+      axios.get(`${config.snapshotHost}&q=0&d=1&rand=${Math.random()}`,
+        {
+          responseType: 'arraybuffer',
+          headers: {
+            'Content-Type': 'image/jpeg',
+          },
+        })
+        .then((response) => {
+          this.lock = false;
+          const writer = fs.createWriteStream(`${this.basePath}/${filename}.jpg`);
+          writer.write(response.data, () => {
+            writer.end();
+          });
+          if (this.errorCnt > 0) {
+            Health.create({ name: 'nvr', status: 'up' });
+            this.errorCnt = 0;
+          }
+        })
+        .catch((error) => {
+          this.lock = false;
+          console.log(error.code);
+          this.errorCnt += 1;
+          console.log(`===================== errorCnt : ${this.errorCnt}========================`);
+          if (this.errorCnt % 600 === 0) {
+            Health.create({ name: 'nvr', status: 'down' });
+          }
         });
-      })
-      .catch((error) => {
-        console.log(error);
-        this.errorCnt += 1;
-        console.log(`===================== errorCnt : ${this.errorCnt}========================`);
-      });
+    }
   }
 }
 

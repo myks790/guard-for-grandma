@@ -2,6 +2,30 @@ import axios from 'axios';
 import config from '../config';
 import userTokenService from './userTokenService';
 
+const feedTemplateObj = {
+  object_type: 'feed',
+  content: {
+    title: 'img title',
+    image_url: `${config.host}/image`,
+    image_width: 640,
+    image_height: 360,
+    description: '',
+    link: {
+      web_url: config.host,
+      mobile_web_url: config.host,
+    },
+  },
+  buttons: [
+    {
+      title: '자세히 보기',
+      link: {
+        web_url: config.host,
+        mobile_web_url: config.host,
+      },
+    },
+  ],
+};
+
 const templateObj = {
   object_type: 'text',
   text: '',
@@ -47,15 +71,29 @@ class MessageService {
     return [];
   }
 
-  async sendAll(_text) {
-    templateObj.text = _text;
+  async sendAll(_text, imgUrl) {
+    feedTemplateObj.content.title = '감지됨';
+    feedTemplateObj.content.description = _text;
+    feedTemplateObj.content.image_url = imgUrl;
+    feedTemplateObj.content.link.web_url = imgUrl;
+    feedTemplateObj.content.link.mobile_web_url = imgUrl;
+    feedTemplateObj.buttons = [
+      {
+        title: '자세히 보기',
+        link: {
+          web_url: imgUrl,
+          mobile_web_url: imgUrl,
+        },
+      },
+    ];
+
     if (userTokenService.getAccessToken()) {
       let uuids = await this.getFriendsUuid();
       if (uuids.length > 5) {
         uuids = uuids.slice(0, 5);
       }
       if (uuids.length > 0) {
-        const result = await this.axios.post('https://kapi.kakao.com/v1/api/talk/friends/message/default/send', `receiver_uuids=${JSON.stringify(uuids)}&template_object=${JSON.stringify(templateObj)}`, {
+        const result = await this.axios.post('https://kapi.kakao.com/v1/api/talk/friends/message/default/send', `receiver_uuids=${JSON.stringify(uuids)}&template_object=${JSON.stringify(feedTemplateObj)}`, {
           headers: {
             Authorization: `${userTokenService.getTokenType()} ${userTokenService.getAccessToken()}`,
           },
