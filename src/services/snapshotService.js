@@ -21,11 +21,13 @@ class SnapshotServive {
           headers: {
             'Content-Type': 'image/jpeg',
           },
+          timeout: 10000,
         })
         .then((response) => {
           this.lock = false;
           const writer = fs.createWriteStream(`${this.basePath}/${filename}.jpg`);
           writer.write(response.data, () => {
+            console.log(`${filename}  writer.end`);
             writer.end();
           });
           if (this.errorCnt > 0) {
@@ -35,9 +37,8 @@ class SnapshotServive {
         })
         .catch((error) => {
           this.lock = false;
-          console.log(error.code);
           this.errorCnt += 1;
-          console.log(`===================== errorCnt : ${this.errorCnt}========================`);
+          console.log(`============= ${error.code} ======== errorCnt : ${this.errorCnt}========================`);
           if (this.errorCnt % 600 === 0) {
             Health.create({ name: 'nvr', status: 'down' });
           }
